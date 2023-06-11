@@ -63,7 +63,7 @@ jobs:
         with:
           upload_url: ${{ steps.update_release.outputs.upload_url }}
           asset_name: ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
-          asset_path: /mac-arm/ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
+          asset_path: mac-arm/ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
           asset_content_type: application/octet-stream
       - name: Upload Certifacte of the MacOS-ARM Artifact to GitHub release
         uses: actions/upload-release-asset@v1
