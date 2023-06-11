@@ -47,15 +47,11 @@ jobs:
       #     release_name: ${{ needs.get_release_version.outputs.version }}
       #     draft: false
       #     prerelease: false
-      - name: get version
-        id: get_version
-        run: |
-          echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      - name: update release
-        id: update_release
-        uses: tubone24/update_release@v1.0
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      # - name: update release
+      #   id: update_release
+      #   uses: tubone24/update_release@v1.0
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
       - name: Retrieve MacOS-ARM Artifact
         run:
           |
