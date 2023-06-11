@@ -36,17 +36,22 @@ jobs:
       - name: cosign-installer
         uses: sigstore/cosign-installer@v3.0.3
       # - uses: tubone24/setup-nim-action@v1.0.1
-      - name: Update Release
+      # - name: Update Release
+      #   id: update_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   with:
+      #     overwrite: true
+      #     tag_name: ${{ needs.get_release_version.outputs.version }}
+      #     release_name: ${{ needs.get_release_version.outputs.version }}
+      #     draft: false
+      #     prerelease: false
+      - name: update release
         id: update_release
-        uses: actions/create-release@v1
+        uses: tubone24/update_release@v1.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        with:
-          overwrite: true
-          tag_name: ${{ needs.get_release_version.outputs.version }}
-          release_name: ${{ needs.get_release_version.outputs.version }}
-          draft: false
-          prerelease: false
       - name: Retrieve MacOS-ARM Artifact
         run:
           |
