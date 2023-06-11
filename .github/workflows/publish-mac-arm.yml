@@ -65,7 +65,7 @@ jobs:
         env:
           COSIGN_EXPERIMENTAL: "true"
         run: |
-          cosign verify-blob ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip --certificate ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem --signature ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig --certificate-identity=https://github.com/${{ github.actor }}/ballerina-custom-jre/.github/workflows/publish-release.yml@refs/heads/main --certificate-oidc-issuer=https://token.actions.githubusercontent.com 
+          cosign verify-blob ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip --certificate ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem --signature ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig --certificate-identity=https://github.com/${{ github.actor }}/ballerina-custom-jre/.github/workflows/publish-mac-arm.yml@refs/heads/main --certificate-oidc-issuer=https://token.actions.githubusercontent.com 
       - name: Upload MacOS-ARM Artifact
         uses: actions/upload-release-asset@v1
         env:
