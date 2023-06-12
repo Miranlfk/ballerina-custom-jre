@@ -34,16 +34,15 @@ jobs:
         uses: actions/checkout@v2
       - name: cosign-installer
         uses: sigstore/cosign-installer@v3.0.3
-      # - name: Create release
-      #   id: update_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ needs.get_release_version.outputs.version }}
-      #     release_name: ${{ needs.get_release_version.outputs.version }}
-      #     draft: false
-          # prerelease: false
+      - name: Install Node CLI
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install GitHub CLI
+        run: |
+          npm install -g github-cli
+          gh --version
       - name: Retrieve MacOS-ARM Artifact
         run:
           |
@@ -77,86 +76,64 @@ jobs:
 
           echo "::set-output name=release_id::${release_id}"
 
-      - name: Get asset ID
-        id: get_asset_id
-        run: |
-          release_id=${{ steps.get_release_id.outputs.release_id }}
-          asset_id=$(curl -s "https://api.github.com/repos/${{ github.repository }}/releases/${release_id}/assets" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            | jq -r ".[] | select(.name == \"ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip\") | .id")
+#       - name: Get asset ID
+#         id: get_asset_id
+#         run: |
+#           release_id=${{ steps.get_release_id.outputs.release_id }}
+#           asset_id=$(curl -s "https://api.github.com/repos/${{ github.repository }}/releases/${release_id}/assets" \
+#             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+#             | jq -r ".[] | select(.name == \"ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip\") | .id")
 
-          echo "::set-output name=asset_id::${asset_id}"
+#           echo "::set-output name=asset_id::${asset_id}"
 
-      - name: Delete asset
-        run: |
-          release_id=${{ steps.get_release_id.outputs.release_id }}
-          asset_id=${{ steps.get_asset_id.outputs.asset_id }}
+#       - name: Delete asset
+#         run: |
+#           release_id=${{ steps.get_release_id.outputs.release_id }}
+#           asset_id=${{ steps.get_asset_id.outputs.asset_id }}
 
-          curl \
-            --request DELETE \
-            --url "https://api.github.com/repos/${{ github.repository }}/releases/${release_id}/assets/${asset_id}" \
-            --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
+#           curl \
+#             --request DELETE \
+#             --url "https://api.github.com/repos/${{ github.repository }}/releases/${release_id}/assets/${asset_id}" \
+#             --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Upload MacOS-ARM artifact
-        run: |
-          release_id=${{ steps.get_release_id.outputs.release_id }}
-          upload_url="https://uploads.github.com/repos/${{ github.repository }}/releases/${release_id}/assets?name=ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip"
+#       - name: Upload MacOS-ARM artifact
+#         run: |
+#           release_id=${{ steps.get_release_id.outputs.release_id }}
+#           upload_url="https://uploads.github.com/repos/${{ github.repository }}/releases/${release_id}/assets?name=ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip"
 
-          curl \
-            --request POST \
-            --url $upload_url \
-            --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip)" \
-            --data-binary @./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
+#           curl \
+#             --request POST \
+#             --url $upload_url \
+#             --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+#             --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip)" \
+#             --data-binary @./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
       
-      - name: Upload MacOS-ARM Certificate
+#       - name: Upload MacOS-ARM Certificate
+#         run: |
+#           release_id=${{ steps.get_release_id.outputs.release_id }}
+#           upload_url="https://uploads.github.com/repos/${{ github.repository }}/releases/${release_id}/assets?name=ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem"
+
+#           curl \
+#             --request POST \
+#             --url $upload_url \
+#             --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+#             --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem)" \
+#             --data-binary @./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem
+
+#       - name: Upload MacOS-ARM Signature
+#         run: |
+#           release_id=${{ steps.get_release_id.outputs.release_id }}
+#           upload_url="https://uploads.github.com/repos/${{ github.repository }}/releases/${release_id}/assets?name=ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig"
+
+#           curl \
+#             --request POST \
+#             --url $upload_url \
+#             --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+#             --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig)" \
+#             --data-binary @./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig
+
+      - name: Update MacOS-ARM Release Assets
         run: |
-          release_id=${{ steps.get_release_id.outputs.release_id }}
-          upload_url="https://uploads.github.com/repos/${{ github.repository }}/releases/${release_id}/assets?name=ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem"
-
-          curl \
-            --request POST \
-            --url $upload_url \
-            --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem)" \
-            --data-binary @./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem
-
-      - name: Upload MacOS-ARM Signature
-        run: |
-          release_id=${{ steps.get_release_id.outputs.release_id }}
-          upload_url="https://uploads.github.com/repos/${{ github.repository }}/releases/${release_id}/assets?name=ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig"
-
-          curl \
-            --request POST \
-            --url $upload_url \
-            --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig)" \
-            --data-binary @./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig
-
-      # - name: Upload MacOS-ARM artifacts
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ needs.update_release.outputs.upload_url }}
-      #     asset_name: ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
-      #     asset_path: ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
-      #     asset_content_type: application/octet-stream
-      # - name: Upload Certifacte of the macOS Artifact to GitHub release
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url:  ${{ needs.update_release.outputs.upload_url }}
-      #     asset_name: ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem
-      #     asset_path: ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem
-      #     asset_content_type: application/octet-stream
-      # - name: Upload Signature of the macOS Artifact to GitHub release
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url:  ${{ needs.update_release.outputs.upload_url }}
-      #     asset_name: ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig
-      #     asset_path: ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig
-      #     asset_content_type: application/octet-stream
+          gh release upload ${{ needs.get_release_version.outputs.version }} ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip --clobber
+          gh release upload ${{ needs.get_release_version.outputs.version }} ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem
+          gh release upload ${{ needs.get_release_version.outputs.version }} ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig
