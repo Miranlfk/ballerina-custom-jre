@@ -34,11 +34,10 @@ jobs:
         uses: actions/checkout@v2
       - name: cosign-installer
         uses: sigstore/cosign-installer@v3.0.3
-      - name: Install Node CLI
+      - name: Install Node
         uses: actions/setup-node@v2
         with:
           node-version: '14'
-
       - name: Install GitHub CLI
         run: |
           npm install -g github-cli
@@ -133,6 +132,8 @@ jobs:
 #             --data-binary @./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig
 
       - name: Update MacOS-ARM Release Assets
+        env:
+          GH_TOKEN : ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release upload ${{ needs.get_release_version.outputs.version }} ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip --clobber
           gh release upload ${{ needs.get_release_version.outputs.version }} ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem
