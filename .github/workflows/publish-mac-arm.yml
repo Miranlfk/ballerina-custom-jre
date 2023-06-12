@@ -86,7 +86,7 @@ jobs:
             --request POST \
             --url $upload_url \
             --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip) \
+            --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip)" \
             --data-binary @./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
       
       - name: Upload MacOS-ARM Certificate
@@ -98,7 +98,7 @@ jobs:
             --request POST \
             --url $upload_url \
             --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem) \
+            --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem)" \
             --data-binary @./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem
 
       - name: Upload MacOS-ARM Signature
@@ -110,7 +110,7 @@ jobs:
             --request POST \
             --url $upload_url \
             --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig) \
+            --header "Content-Type: $(file -b --mime-type ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig)" \
             --data-binary @./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig
 
       # - name: Upload MacOS-ARM artifacts
