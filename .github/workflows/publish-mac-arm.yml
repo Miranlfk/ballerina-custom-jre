@@ -77,6 +77,26 @@ jobs:
 
           echo "::set-output name=release_id::${release_id}"
 
+      - name: Get asset ID
+        id: get_asset_id
+        run: |
+          release_id=${{ steps.get_release_id.outputs.release_id }}
+          asset_id=$(curl -s "https://api.github.com/repos/${{ github.repository }}/releases/${release_id}/assets" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            | jq -r ".[] | select(.name == \"ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip\") | .id")
+
+          echo "::set-output name=asset_id::${asset_id}"
+
+      - name: Delete asset
+        run: |
+          release_id=${{ steps.get_release_id.outputs.release_id }}
+          asset_id=${{ steps.get_asset_id.outputs.asset_id }}
+
+          curl \
+            --request DELETE \
+            --url "https://api.github.com/repos/${{ github.repository }}/releases/${release_id}/assets/${asset_id}" \
+            --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
+
       - name: Upload MacOS-ARM artifact
         run: |
           release_id=${{ steps.get_release_id.outputs.release_id }}
