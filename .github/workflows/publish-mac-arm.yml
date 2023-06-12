@@ -2,6 +2,8 @@ name: Publish MacOS-ARM release
 
 on:
   workflow_dispatch:
+  release:
+    types: [created]
   
 permissions:
   id-token: write 
@@ -58,21 +60,21 @@ jobs:
       #       ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
       #       ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem
       #       ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig
-#       - name: Upload MacOS-ARM artifacts
-#         uses: actions/upload-release-asset@v1
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           upload_url: https://github.com/${{ github.actor}}/ballerina-custom-jre/releases/download/${{ needs.get_release_version.outputs.version }}/ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
-#           asset_name: ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
-#           asset_path: ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
-#           asset_content_type: application/octet-stream
+      - name: Upload MacOS-ARM artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.get_release_version.outputs.upload_url }}
+          asset_name: ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
+          asset_path: ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
+          asset_content_type: application/octet-stream
       - name: Upload Certifacte of the macOS Artifact to GitHub release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url:  https://github.com/${{ github.actor}}/ballerina-custom-jre/releases/download/${{ needs.get_release_version.outputs.version }}/ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem
+          upload_url:  ${{ needs.get_release_version.outputs.upload_url }}
           asset_name: ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem
           asset_path: ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.pem
           asset_content_type: application/octet-stream
@@ -81,7 +83,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url:  https://github.com/${{ github.actor}}/ballerina-custom-jre/releases/download/${{ needs.get_release_version.outputs.version }}/ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig
+          upload_url:  ${{ needs.get_release_version.outputs.upload_url }}
           asset_name: ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig
           asset_path: ./ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.sig
           asset_content_type: application/octet-stream
