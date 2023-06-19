@@ -26,8 +26,6 @@ jobs:
     name: Update Release
     runs-on: ubuntu-latest
 #     if: github.repository_owner == 'ballerina-platform'
-    outputs:
-      upload_url: ${{ steps.update_release.outputs.upload_url }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
