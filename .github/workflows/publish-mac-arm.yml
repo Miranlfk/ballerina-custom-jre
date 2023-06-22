@@ -44,6 +44,6 @@ jobs:
         env:
           GH_TOKEN : ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload v${{ github.event.inputs.versionName }} ./ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.pem
-          gh release upload v${{ github.event.inputs.versionName }} ./ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.sig
-          
+          gh release upload ${{ github.event.inputs.versionName }} ./ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.pem
+          gh release upload ${{ github.event.inputs.versionName }} ./ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.sig
+
