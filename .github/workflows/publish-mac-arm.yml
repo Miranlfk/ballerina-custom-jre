@@ -33,10 +33,10 @@ jobs:
       - name: Retrieve MacOS-ARM Artifact
         run:
           |
-          wget https://github.com/${{ github.actor }}/ballerina-custom-jre/releases/download/${{ needs.get_release_version.outputs.version }}/ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip
+          wget https://github.com/${{ github.actor }}/ballerina-custom-jre/releases/download/${{ github.event.inputs.versionName }}/ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.zip
       - name: Sign the MacOS-ARM Artifact
         run: |
-          cosign sign-blob ballerina-jre-macos-arm-64-${{ needs.get_release_version.outputs.version }}.zip --output-certificate ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.pem --output-signature ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.sig --yes
+          cosign sign-blob ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.zip --output-certificate ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.pem --output-signature ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.sig --yes
       - name: Verify the MacOS-ARM Artifact
         run: |
           cosign verify-blob ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.zip --certificate ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.pem --signature ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.sig --certificate-identity=https://github.com/${{ github.actor }}/ballerina-custom-jre/.github/workflows/publish-mac-arm.yml@refs/heads/main --certificate-oidc-issuer=https://token.actions.githubusercontent.com 
@@ -46,3 +46,4 @@ jobs:
         run: |
           gh release upload v${{ github.event.inputs.versionName }} ./ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.pem
           gh release upload v${{ github.event.inputs.versionName }} ./ballerina-jre-macos-arm-64-${{ github.event.inputs.versionName }}.sig
+          
